@@ -1,0 +1,223 @@
+/* app.css */
+
+.sidebar {
+    background-color: white;
+    color: #1f2937;
+    width: 16rem;
+    space-y-6;
+    padding: 1.75rem 0.5rem;
+    position: fixed;
+    inset-y-0;
+    left: 0;
+    transform: translateX(0);
+    transition-transform: duration-200 ease-in-out;
+    shadow-lg;
+    z-index: 50;
+  }
+  
+  .sidebar-hidden {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar-button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    space-x-2;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition-duration: 200ms;
+  }
+  
+  .sidebar-button-active {
+    background-color: #2563eb;
+    color: white;
+  }
+  
+  .sidebar-button:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+  }
+  
+  .main-content {
+    flex: 1;
+    margin-left: 16rem;
+  }
+  
+  .top-bar {
+    background-color: white;
+    color: #1f2937;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-section {
+    background-color: white;
+    padding: 3rem 4rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 64rem;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    space-y-6;
+    margin-top: 10rem;
+  }
+  
+  .profile-image {
+    border-radius: 50%;
+    width: 8rem;
+    height: 8rem;
+    border: 0.25rem solid #2563eb;
+  }
+  
+  .dashboard-section {
+    background: linear-gradient(to right, #6d28d9, #4299e1);
+    padding: 1.5rem;
+    color: white;
+  }
+  
+  .stats-card {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .chart-container {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .booking-table {
+    width: 100%;
+    text-align: center;
+    border: 1px solid #cbd5e0;
+  }
+  
+  .booking-table th,
+  .booking-table td {
+    padding: 0.75rem;
+    border: 1px solid #cbd5e0;
+  }
+  
+  .booking-table thead {
+    background-color: #6d28d9;
+    color: white;
+  }
+  
+  .booking-table tbody tr:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .booking-section {
+    background-color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 64rem;
+    margin: auto;
+    transition-all: duration-300;
+    margin-top: 7.5rem;
+  }
+  
+  .settings-section {
+    background-color: white;
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 64rem;
+    margin: auto;
+    transition-all: duration-300;
+    margin-top: 7.5rem;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 1rem;
+    transition-all: duration-300;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #128C7E;
+  }
+  
+  .button {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: bold;
+    text-align: center;
+    transition-all: duration-300;
+  }
+  
+  .button-primary {
+    background-color: #25D366;
+    color: white;
+  }
+  
+  .button-primary:hover {
+    background-color: #1ea754;
+  }
+  
+  .alert-message {
+    color: #e53e3e;
+    font-weight: semibold;
+    text-align: center;
+  }
+  
+  .time-slot-button {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    font-weight: semibold;
+    transition-all: duration-200;
+  }
+  
+  .time-slot-button-active {
+    background-color: #25D366;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+  }
+  
+  .time-slot-button:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .duty-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    font-weight: semibold;
+    transition-all: duration-200;
+    background-color: #128C7E;
+    color: white;
+  }
+  
+  .duty-button:hover {
+    background-color: #107d6c;
+  }
+  
+  .duty-button-active {
+    background-color: #25D366;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+  }
+  
