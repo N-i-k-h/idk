@@ -13,7 +13,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("https://facultyside.onrender.com/login", {
+      const response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -77,6 +77,12 @@ const Login = () => {
             New Customer?{" "}
             <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => navigate("/register")}>
               Register
+            </span>
+          </p>
+          <p className="text-center text-gray-600 mt-2">
+            Admin?{" "}
+            <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => navigate("/admin")}>
+              Login as Admin
             </span>
           </p>
         </div>
