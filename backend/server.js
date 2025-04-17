@@ -55,18 +55,25 @@ const FacultySchema = new mongoose.Schema({
   duties: {
     exam: { type: Number, default: 0 },
     bundle: { type: Number, default: 0 },
-    renewal: { type: Number, default: 0 },
+    relevel: { type: Number, default: 0 },
   },
   bookings: [
     {
       date: String,
       timeSlot: String,
       dutyType: String,
+      year: Number, // Add year field
     },
   ],
 });
 
+const AvailableDateSchema = new mongoose.Schema({
+  date: { type: String, required: true },
+  year: { type: Number, required: true },
+});
+
 const Faculty = mongoose.model("Faculty", FacultySchema);
+const AvailableDate = mongoose.model("AvailableDate", AvailableDateSchema);
 
 // ✅ Multer for Image Upload
 const storage = multer.diskStorage({
@@ -120,7 +127,7 @@ app.post("/register", upload.single("image"), async (req, res) => {
       branch,
       password: hashedPassword,
       imageUrl,
-      duties: { exam: 0, bundle: 0, renewal: 0 },
+      duties: { exam: 0, bundle: 0, relevel: 0 },
       bookings: [],
     });
 
@@ -157,6 +164,102 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// ✅ Admin Login API
+app.post("/admin/login", async (req, res) => {
+  try {
+    const { adminId, password, secretKey } = req.body;
+    console.log("Admin Login Attempt:", { adminId, password, secretKey }); // Log the attempt
+
+    if (secretKey !== "0000") {
+      return res.status(400).json({ message: "Invalid Secret Key!" });
+    }
+
+    const faculty = await Faculty.findOne({ facultyId: adminId });
+
+    if (!faculty) {
+      console.log("Admin not found:", adminId);
+      return res.status(400).json({ message: "Invalid Admin ID or Password!" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, faculty.password);
+
+    if (!isPasswordValid) {
+      console.log("Invalid password:", { isPasswordValid });
+      return res.status(400).json({ message: "Invalid Admin ID or Password!" });
+    }
+
+    const token = jwt.sign({ facultyId: faculty.facultyId }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+    res.status(200).json({
+      message: "Admin Login Successful!",
+      token,
+      faculty,
+    });
+  } catch (error) {
+    console.error("❌ Admin Login Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ✅ Fetch Admin Dashboard Data
+app.get("/admin/dashboard", authenticate, async (req, res) => {
+  try {
+    const facultyData = await Faculty.find().select("-password");
+
+    const totalFaculties = facultyData.length;
+    const associateProfessors = facultyData.filter(faculty => faculty.designation === "Associate Professor").length;
+    const assistantProfessors = facultyData.filter(faculty => faculty.designation === "Assistant Professor").length;
+    const nonTeachingStaff = facultyData.filter(faculty => faculty.designation === "Non-Teaching Staff").length;
+    const hod = facultyData.filter(faculty => faculty.designation === "HOD").length;
+
+    const branchDistribution = facultyData.reduce((acc, faculty) => {
+      acc[faculty.branch] = (acc[faculty.branch] || 0) + 1;
+      return acc;
+    }, {});
+
+    res.json({
+      totalFaculties,
+      associateProfessors,
+      assistantProfessors,
+      nonTeachingStaff,
+      hod,
+      branchDistribution,
+    });
+  } catch (error) {
+    console.error("❌ Error Fetching Admin Dashboard Data:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ✅ Fetch Faculty List
+app.get("/admin/faculty-list", authenticate, async (req, res) => {
+  try {
+    const { branch, page = 1 } = req.query;
+    const itemsPerPage = 10;
+
+    const query = branch ? { branch } : {};
+    const facultyData = await Faculty.find(query).select("-password").skip((page - 1) * itemsPerPage).limit(itemsPerPage);
+
+    res.json({ faculties: facultyData });
+  } catch (error) {
+    console.error("❌ Error Fetching Faculty List:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ✅ Fetch Admin Profile
+app.get("/admin/profile", authenticate, async (req, res) => {
+  try {
+    const faculty = await Faculty.findOne({ facultyId: req.facultyId }).select("-password");
+    if (!faculty) return res.status(404).json({ message: "Admin not found!" });
+
+    res.json(faculty);
+  } catch (error) {
+    console.error("❌ Error Fetching Admin Profile:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 // ✅ Fetch Faculty Profile
 app.get("/faculty-profile/:facultyId", async (req, res) => {
   try {
@@ -173,9 +276,9 @@ app.get("/faculty-profile/:facultyId", async (req, res) => {
 // ✅ Booking API
 app.post("/book-room", async (req, res) => {
   try {
-    const { facultyId, date, timeSlot, dutyType } = req.body;
+    const { facultyId, date, timeSlot, dutyType, year } = req.body;
 
-    if (!facultyId || !date || !timeSlot || !dutyType) {
+    if (!facultyId || !date || !timeSlot || !dutyType || !year) {
       return res.status(400).json({ message: "❌ Missing required fields!" });
     }
 
@@ -187,13 +290,13 @@ app.post("/book-room", async (req, res) => {
     }
 
     if (!faculty.duties) {
-      faculty.duties = { exam: 0, bundle: 0, renewal: 0 };
+      faculty.duties = { exam: 0, bundle: 0, relevel: 0 };
     }
 
     const dutyKey = dutyType.toLowerCase();
     faculty.duties[dutyKey] = (faculty.duties[dutyKey] || 0) + 1;
 
-    faculty.bookings.push({ date, timeSlot, dutyType });
+    faculty.bookings.push({ date, timeSlot, dutyType, year });
     await faculty.save();
 
     res.status(200).json({
@@ -263,6 +366,65 @@ app.put("/update-profile", authenticate, upload.single("image"), async (req, res
   }
 });
 
+// ✅ Add Date API
+app.post("/admin/add-date", authenticate, async (req, res) => {
+  try {
+    const { date, year } = req.body;
+
+    if (!date || !year) {
+      return res.status(400).json({ message: "❌ Missing required fields!" });
+    }
+
+    const newDate = new AvailableDate({ date, year });
+    await newDate.save();
+
+    res.status(200).json({ message: "✅ Date added successfully!" });
+  } catch (error) {
+    console.error("❌ Error adding date:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ✅ Reset Dates API
+app.post("/admin/reset-dates", authenticate, async (req, res) => {
+  try {
+    // Remove all available dates
+    await AvailableDate.deleteMany({});
+
+    // Remove all bookings from faculty
+    await Faculty.updateMany({}, { $set: { bookings: [] } });
+
+    res.status(200).json({ message: "✅ Dates reset successfully!" });
+  } catch (error) {
+    console.error("❌ Error resetting dates:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ✅ Fetch Available Dates
+app.get("/admin/available-dates", authenticate, async (req, res) => {
+  try {
+    const dates = await AvailableDate.find();
+    res.json(dates);
+  } catch (error) {
+    console.error("❌ Error fetching available dates:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+// ✅ Fetch Date History
+app.get("/admin/date-history", authenticate, async (req, res) => {
+  try {
+    const faculty = await Faculty.findOne({ facultyId: req.facultyId }).select("bookings");
+    if (!faculty) return res.status(404).json({ message: "Faculty not found!" });
+
+    res.json(faculty.bookings);
+  } catch (error) {
+    console.error("❌ Error Fetching Date History:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 // ✅ Global Error Handler
 app.use((err, req, res, next) => {
   console.error("❌ Unhandled Error:", err);
@@ -272,4 +434,3 @@ app.use((err, req, res, next) => {
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
- 
