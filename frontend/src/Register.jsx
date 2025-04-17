@@ -13,9 +13,11 @@ const Register = () => {
     confirmPassword: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,6 +28,7 @@ const Register = () => {
       return;
     }
 
+    setLoading(true);
     try {
       const response = await fetch("https://idk-4-50nz.onrender.com/register", {
         method: "POST",
@@ -38,16 +41,23 @@ const Register = () => {
         alert("✅ Registration Successful!");
         navigate("/login");
       } else {
-        setError(data.message);
+        setError(data.message || "❌ Registration failed! Please try again.");
       }
     } catch (error) {
       console.error("❌ Registration Error:", error);
       setError("❌ Registration failed! Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const branches = ["CSE", "ISE", "ME", "EEE", "ECE", "AIML", "Civil", "CSD", "CSDS"];
-  const designations = ["Assistant Professor", "Associate Professor", "Non-Teaching Faculty", "HOD"];
+  const designations = [
+    "Assistant Professor",
+    "Associate Professor",
+    "Non-Teaching Faculty",
+    "HOD",
+  ];
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-blue-100">
@@ -58,6 +68,7 @@ const Register = () => {
             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoJbEffHFykaiCR1H8gMG7lVar2rs5QvST6g&s"
             alt="Illustration"
             className="w-64"
+            aria-label="Registration Illustration"
           />
         </div>
 
@@ -77,6 +88,7 @@ const Register = () => {
               placeholder="Full Name"
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Full Name"
             />
             <input
               type="text"
@@ -86,6 +98,7 @@ const Register = () => {
               placeholder="Faculty ID"
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Faculty ID"
             />
             <select
               name="designation"
@@ -93,8 +106,11 @@ const Register = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Designation"
             >
-              <option value="" disabled>Select Designation</option>
+              <option value="" disabled>
+                Select Designation
+              </option>
               {designations.map((designation) => (
                 <option key={designation} value={designation}>
                   {designation}
@@ -107,8 +123,11 @@ const Register = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Branch"
             >
-              <option value="" disabled>Select Branch</option>
+              <option value="" disabled>
+                Select Branch
+              </option>
               {branches.map((branch) => (
                 <option key={branch} value={branch}>
                   {branch}
@@ -123,6 +142,7 @@ const Register = () => {
               placeholder="Email ID"
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Email ID"
             />
             <input
               type="text"
@@ -132,6 +152,7 @@ const Register = () => {
               placeholder="Phone Number"
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Phone Number"
             />
             <input
               type="password"
@@ -141,6 +162,7 @@ const Register = () => {
               placeholder="Password"
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Password"
             />
             <input
               type="password"
@@ -150,13 +172,15 @@ const Register = () => {
               placeholder="Confirm Password"
               className="w-full p-2 border rounded-lg"
               required
+              aria-label="Confirm Password"
             />
 
             <button
               type="submit"
               className="w-full bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition"
+              disabled={loading}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
 
