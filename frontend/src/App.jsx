@@ -50,7 +50,7 @@ const App = () => {
     if (!facultyId) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/faculty-profile/${facultyId}`);
+      const response = await fetch(`https://idk-4-50nz.onrender.com/faculty-profile/${facultyId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch faculty data");
       }
@@ -70,7 +70,7 @@ const App = () => {
 
   const fetchAvailableDates = async () => {
     try {
-      const response = await fetch("http://localhost:5000/admin/available-dates", {
+      const response = await fetch("https://idk-4-50nz.onrender.com/admin/available-dates", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const App = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/book-room", {
+      const response = await fetch("https://idk-4-50nz.onrender.com/book-room", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -172,7 +172,7 @@ const App = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/update-profile`, {
+      const response = await fetch(`https://idk-4-50nz.onrender.com/update-profile`, {
         method: "PUT",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`,
