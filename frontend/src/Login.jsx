@@ -13,7 +13,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("https://idk-4-50nz.onrender.com/login", {
+      const response = await fetch("https://back-w3b4.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
