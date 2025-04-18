@@ -29,7 +29,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchDateHistory = async () => {
       try {
-        const response = await fetch("https://back-w3b4.onrender.com/admin/date-history", {
+        const response = await fetch("https://idb.onrender.com/admin/date-history", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -45,7 +45,7 @@ const Admin = () => {
 
     const fetchAvailableDates = async () => {
       try {
-        const response = await fetch("https://back-w3b4.onrender.com/admin/available-dates", {
+        const response = await fetch("https://idb.onrender.com/admin/available-dates", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -94,7 +94,7 @@ const Admin = () => {
       const adminId = localStorage.getItem("adminId");
       if (adminId) {
         try {
-          const response = await fetch("https://back-w3b4.onrender.com/admin/profile", {
+          const response = await fetch("https://idb.onrender.com/admin/profile", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -112,7 +112,7 @@ const Admin = () => {
 
     const fetchDashboardData = async () => {
       try {
-        const response = await fetch("https://back-w3b4.onrender.com/admin/dashboard", {
+        const response = await fetch("https://idb.onrender.com/admin/dashboard", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -135,7 +135,7 @@ const Admin = () => {
     const fetchFacultyList = async () => {
       if (selectedBranch) {
         try {
-          const response = await fetch(`https://back-w3b4.onrender.com/admin/faculty-list?branch=${selectedBranch}&page=${currentPage}`, {
+          const response = await fetch(`https://idb.onrender.com/admin/faculty-list?branch=${selectedBranch}&page=${currentPage}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -180,7 +180,7 @@ const Admin = () => {
 
   const handleConfirm = async () => {
     try {
-      const response = await fetch("https://back-w3b4.onrender.com/admin/add-date", {
+      const response = await fetch("https://idb.onrender.com/admin/add-date", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -207,7 +207,7 @@ const Admin = () => {
 
   const handleResetDates = async () => {
     try {
-      const response = await fetch("https://back-w3b4.onrender.com/admin/reset-dates", {
+      const response = await fetch("https://idb.onrender.com/admin/reset-dates", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
