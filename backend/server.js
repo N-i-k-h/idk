@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Get the directory name
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -77,7 +77,7 @@ const AvailableDate = mongoose.model("AvailableDate", AvailableDateSchema);
 
 // ✅ Multer for Image Upload
 const storage = multer.diskStorage({
-  destination: "uploads/",
+  destination: path.join(__dirname, "uploads"),
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   },
@@ -168,23 +168,20 @@ app.post("/login", async (req, res) => {
 app.post("/admin/login", async (req, res) => {
   try {
     const { adminId, password, secretKey } = req.body;
-    console.log("Admin Login Attempt:", { adminId, password, secretKey }); // Log the attempt
 
-    if (secretKey !== "0000") {
+    if (secretKey !== process.env.ADMIN_SECRET_KEY) {
       return res.status(400).json({ message: "Invalid Secret Key!" });
     }
 
     const faculty = await Faculty.findOne({ facultyId: adminId });
 
     if (!faculty) {
-      console.log("Admin not found:", adminId);
       return res.status(400).json({ message: "Invalid Admin ID or Password!" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, faculty.password);
 
     if (!isPasswordValid) {
-      console.log("Invalid password:", { isPasswordValid });
       return res.status(400).json({ message: "Invalid Admin ID or Password!" });
     }
 
@@ -432,8 +429,5 @@ app.use((err, req, res, next) => {
 });
 
 // ✅ Start Server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
