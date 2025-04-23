@@ -168,11 +168,7 @@ app.post("/login", async (req, res) => {
 // ✅ Admin Login API
 app.post("/admin/login", async (req, res) => {
   try {
-    const { adminId, password, secretKey } = req.body;
-
-    if (secretKey !== process.env.ADMIN_SECRET_KEY) {
-      return res.status(400).json({ message: "Invalid Secret Key!" });
-    }
+    const { adminId, password } = req.body;
 
     const faculty = await Faculty.findOne({ facultyId: adminId });
 
