@@ -13,10 +13,11 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Get the directory name
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ JWT Middleware
 const authenticate = (req, res, next) => {
