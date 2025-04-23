@@ -13,7 +13,7 @@ const AdminLogin = () => {
     setError("");
 
     try {
-      const response = await fetch("https://ind-54pe.onrender.com/admin/login", {
+      const response = await fetch("https://idkba.onrender.com/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
