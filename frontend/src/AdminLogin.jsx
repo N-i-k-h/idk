@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AdminLogin = () => {
-  const [formData, setFormData] = useState({ adminId: "", password: "", secretKey: "" });
+  const [formData, setFormData] = useState({ adminId: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -65,17 +65,6 @@ const AdminLogin = () => {
                 onChange={handleChange}
                 required
                 placeholder="Password"
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <input
-                type="password"
-                name="secretKey"
-                value={formData.secretKey}
-                onChange={handleChange}
-                required
-                placeholder="Secret Key"
                 className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
               />
             </div>
