@@ -30,7 +30,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await fetch("https://idb.onrender.com/register", {
+      const response = await fetch("https://ind-54pe.onrender.com/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
